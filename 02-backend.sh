@@ -40,7 +40,11 @@ dnf module enable nodejs:24 -y &>> $logs_file
 dnf install nodejs -y &>> $logs_file
 validate $? "Installing nodejs"
 
+rm -rf /app
+validate $? "Removing old code"
+
 mkdir -p /app
+validate $? "Creating app directory"
 
 id expense &>> $logs_file
 if [ $? -ne 0 ]; then
@@ -57,7 +61,6 @@ cd /app
 tar -xzf /tmp/backend.tar.gz &>> $logs_file
 validate $? "Extracting backend artifacts"
 
-cd /app
 npm install &>> $logs_file
 validate $? "Installing backend dependencies"
 
