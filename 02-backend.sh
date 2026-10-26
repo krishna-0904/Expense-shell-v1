@@ -33,7 +33,7 @@ dnf module enable nodejs:24 -y &>> $logs_file
 dnf install nodejs -y &>> $logs_file
 validate $? "Installing nodejs"
 
-mkdir /app
+mkdir -p /app
 
 useradd --system --home /app --shell /sbin/nologin --comment "expense system user" expense &>> $logs_file
 validate $? "Creating expense system user"
@@ -54,7 +54,7 @@ sed -i "s/DOMAIN_NAME/$domain_name/g" "$scripts_dir/backend.service"
 cp "$scripts_dir/backend.service" /etc/systemd/system/backend.service
 
 dnf install mysql -y &>> $logs_file
-mysql -h mysql.DOMAIN_NAME -u root -pExpenseApp@1 < /app/schema/backend.sql 
+mysql -h "mysql.$domain_name" -u root -pExpenseApp@1 < /app/schema/backend.sql 
 validate $? "Creating backend database"
 
 systemctl daemon-reload &>> $logs_file
