@@ -42,8 +42,13 @@ validate $? "Installing nodejs"
 
 mkdir -p /app
 
-useradd --system --home /app --shell /sbin/nologin --comment "expense system user" expense &>> $logs_file
-validate $? "Creating expense system user"
+id expense &>> $logs_file
+if [ $? -ne 0 ]; then
+    useradd --system --home /app --shell /sbin/nologin --comment "expense system user" expense &>> $logs_file
+    validate $? "Creating system user"
+else
+    echo -e "$(timestamp) [INFO] System user expense already exist...${Y}SKIPPING${N}"
+fi
 
 curl -o /tmp/backend.tar.gz https://raw.githubusercontent.com/daws-92s/expense-documentation/refs/heads/main/artifacts/expense-backend-v5.tar.gz
 validate $? "Downloading backend artifacts"
