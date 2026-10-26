@@ -28,36 +28,36 @@ validate() {
     fi
 }
 
-dnf module disable nodejs -y
-dnf module enable nodejs:24 -y
-dnf install nodejs -y
+dnf module disable nodejs -y &>> $logs_file
+dnf module enable nodejs:24 -y &>> $logs_file
+dnf install nodejs -y &>> $logs_file
 validate $? "Installing nodejs"
 
 mkdir /app
 
-useradd --system --home /app --shell /sbin/nologin --comment "expense system user" expense
+useradd --system --home /app --shell /sbin/nologin --comment "expense system user" expense &>> $logs_file
 validate $? "Creating expense system user"
 
 curl -o /tmp/backend.tar.gz https://raw.githubusercontent.com/daws-92s/expense-documentation/refs/heads/main/artifacts/expense-backend-v5.tar.gz
 validate $? "Downloading backend artifacts"
 
 cd /app
-tar -xzf /tmp/backend.tar.gz
+tar -xzf /tmp/backend.tar.gz &>> $logs_file
 validate $? "Extracting backend artifacts"
 
 cd /app
-npm install
+npm install &>> $logs_file
 validate $? "Installing backend dependencies"
 
 
 sed -i "s/DOMAIN_NAME/$domain_name/g" "$scripts_dir/backend.service"
 cp "$scripts_dir/backend.service" /etc/systemd/system/backend.service
 
-dnf install mysql -y
-mysql -h mysql.DOMAIN_NAME -u root -pExpenseApp@1 < /app/schema/backend.sql
+dnf install mysql -y &>> $logs_file
+mysql -h mysql.DOMAIN_NAME -u root -pExpenseApp@1 < /app/schema/backend.sql 
 validate $? "Creating backend database"
 
-systemctl daemon-reload
-systemctl enable backend
-systemctl start backend
+systemctl daemon-reload &>> $logs_file
+systemctl enable backend &>> $logs_file
+systemctl start backend &>> $logs_file
 validate $? "Starting backend service"
