@@ -69,7 +69,7 @@ sed -i "s/DOMAIN_NAME/$domain_name/g" "$scripts_dir/backend.service"
 cp "$scripts_dir/backend.service" /etc/systemd/system/backend.service
 
 dnf install mysql -y &>> $logs_file
-mysql -h "mysql.$domain_name" -u root -pExpenseApp@1 < /app/schema/backend.sql 
+mysql -h "mysql.${domain_name}" -u root -pExpenseApp@1 < /app/schema/backend.sql &>> $logs_file
 validate $? "Creating backend database"
 
 systemctl daemon-reload &>> $logs_file
