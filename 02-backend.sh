@@ -3,6 +3,7 @@
 user_id=$(id -u)
 logs_folder="/var/log/expense"
 logs_file="${logs_folder}/${0}.log"
+domain_name="depops.online"
 scripts_dir=$(dirname "$(realpath "$0")")
 R="\e[31m"
 G="\e[32m"
@@ -51,3 +52,12 @@ validate $? "Installing backend dependencies"
 
 sed -i "s/DOMAIN_NAME/$domain_name/g" "$scripts_dir/backend.service"
 cp "$scripts_dir/backend.service" /etc/systemd/system/backend.service
+
+dnf install mysql -y
+mysql -h mysql.DOMAIN_NAME -u root -pExpenseApp@1 < /app/schema/backend.sql
+validate $? "Creating backend database"
+
+systemctl daemon-reload
+systemctl enable backend
+systemctl start backend
+validate $? "Starting backend service"
