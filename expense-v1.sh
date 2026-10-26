@@ -13,7 +13,7 @@ do
                 --image-id $ami_id \
                 --instance-type $instance_type \
                 --security-groups "my-ssh" "expense-$instance" \
-                --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=Expense-$instance}]" \
+                --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=expense-$instance}]" \
                 --query 'Instances[0].InstanceId' \
                 --output text
         )
