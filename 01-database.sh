@@ -22,16 +22,16 @@ validate() {
         echo -e "${2} ${R}failed${N}" | tee -a $logs_file
         exit 1
     else
-        echo -e"${2} ${G}successful${N}" | tee -a $logs_file
+        echo -e "${2} ${G}successful${N}" | tee -a $logs_file
     fi
 }
 
-dnf install mysql-server -y
+dnf install mysql-server -y &>> $logs_file
 validate $? "Installing mysql-server"
 
-systemctl enable mysqld
-systemctl start mysqld
+systemctl enable mysqld &>> $logs_file
+systemctl start mysqld &>> $logs_file
 validate $? "Starting mysql-server"
 
-mysql_secure_installation --set-root-pass ExpenseApp@1
+mysql_secure_installation --set-root-pass ExpenseApp@1 
 validate $? "Setting root password for mysql-server"
