@@ -28,6 +28,9 @@ validate() {
     fi
 }
 
+echo "$(timestamp) [INFO] ==== Script started Execution =====" | tee -a $logs_file
+
+
 dnf module disable nodejs -y &>> $logs_file
 dnf module enable nodejs:24 -y &>> $logs_file
 dnf install nodejs -y &>> $logs_file
@@ -61,3 +64,7 @@ systemctl daemon-reload &>> $logs_file
 systemctl enable backend &>> $logs_file
 systemctl start backend &>> $logs_file
 validate $? "Starting backend service"
+
+
+echo "$(timestamp) [INFO] Script completed in $SECONDS seconds"
+echo "$(timestamp) [INFO] ==== Script completed Execution =====" | tee -a $logs_file
