@@ -16,7 +16,8 @@ do
                 --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=expense-$instance}]" \
                 --query 'Instances[0].InstanceId' \
                 --output text
-        )
+                            
+    )
 
-        echo "$instance ID: $instance_id"
+    echo "$instance ID: $instance_id"
 done
