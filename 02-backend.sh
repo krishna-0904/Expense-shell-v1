@@ -1,0 +1,53 @@
+#!/bin/bash
+
+user_id=$(id -u)
+logs_folder="/var/log/expense"
+logs_file="${logs_folder}/${0}.log"
+scripts_dir=$(dirname "$(realpath "$0")")
+R="\e[31m"
+G="\e[32m"
+Y="\e[33m"
+N="\e[0m"
+
+
+if [ $user_id -ne 0 ]; then 
+    echo "Please run this script with sudo access..."
+    exit 1
+fi
+
+mkdir -p $logs_folder
+echo "Script execution started at $(date +"%F %T")" &>> $logs_file
+
+validate() {
+    if [ $1 -ne 0 ]; then 
+        echo -e "${2} ${R}failed${N}" | tee -a $logs_file
+        exit 1
+    else
+        echo -e "${2} ${G}successful${N}" | tee -a $logs_file
+    fi
+}
+
+dnf module disable nodejs -y
+dnf module enable nodejs:24 -y
+dnf install nodejs -y
+validate $? "Installing nodejs"
+
+mkdir /app
+
+useradd --system --home /app --shell /sbin/nologin --comment "expense system user" expense
+validate $? "Creating expense system user"
+
+curl -o /tmp/backend.tar.gz https://raw.githubusercontent.com/daws-92s/expense-documentation/refs/heads/main/artifacts/expense-backend-v5.tar.gz
+validate $? "Downloading backend artifacts"
+
+cd /app
+tar -xzf /tmp/backend.tar.gz
+validate $? "Extracting backend artifacts"
+
+cd /app
+npm install
+validate $? "Installing backend dependencies"
+
+
+sed -i "s/DOMAIN_NAME/$domain_name/g" "$scripts_dir/backend.service"
+cp "$scripts_dir/backend.service" /etc/systemd/system/backend.service
