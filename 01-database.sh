@@ -10,6 +10,10 @@ Y="\e[33m"
 N="\e[0m"
 
 
+timestamp(){
+    date "+%F %T" 
+}
+
 if [ $user_id -ne 0 ]; then 
     echo "Please run this script with sudo access..."
     exit 1
@@ -27,6 +31,8 @@ validate() {
     fi
 }
 
+echo "$(timestamp) [INFO] ==== Script started Execution =====" | tee -a $logs_file
+
 dnf install mysql-server -y &>> $logs_file
 validate $? "Installing mysql-server"
 
@@ -36,3 +42,6 @@ validate $? "Starting mysql-server"
 
 mysql_secure_installation --set-root-pass ExpenseApp@1 
 validate $? "Setting root password for mysql-server"
+
+echo "$(timestamp) [INFO] Script completed in $SECONDS seconds"
+echo "$(timestamp) [INFO] ==== Script completed Execution =====" | tee -a $logs_file
