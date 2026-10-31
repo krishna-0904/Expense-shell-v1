@@ -65,8 +65,10 @@ npm install &>> $logs_file
 validate $? "Installing backend dependencies"
 
 
-sed -i "s/DOMAIN_NAME/$domain_name/g" "$scripts_dir/backend.service"
-cp "$scripts_dir/backend.service" /etc/systemd/system/backend.service
+# sed -i "s/DOMAIN_NAME/$domain_name/g" "$scripts_dir/backend.service"
+# cp "$scripts_dir/backend.service" /etc/systemd/system/backend.service
+
+sed "s/DOMAIN_NAME/$domain_name/g" "$scripts_dir/backend.service" > /etc/systemd/system/backend.service
 
 dnf install mysql -y &>> $logs_file
 validate $? "Installing mysql client"
