@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 User=expense
-Environment=DB_HOST=mysql.DOMAIN_NAME
+Environment=DB_HOST=database.DOMAIN_NAME
 Environment=DB_USER=expense
 Environment=DB_PWD=ExpenseApp@1
 Environment=DB_DATABASE=transactions
