@@ -57,5 +57,5 @@ cp "$scripts_dir/expense.conf" /etc/systemd/system/expense.conf
 nginx -t &>> $logs_file
 validate $? "Testing nginx configuration"
 
-systemctl restart nginx &>> $logs_file
+sudo systemctl restart nginx &>> $logs_file
 validate $? "Restarting nginx"
