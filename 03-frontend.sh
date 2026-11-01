@@ -34,28 +34,28 @@ validate() {
 
 echo "$(timestamp) [INFO] ==== Script started Execution =====" | tee -a $logs_file
 
-dnf install nginx -y
+dnf install nginx -y &>> $logs_file
 validate $? "Installing nginx"
 
-systemctl enable nginx
-systemctl start nginx
+systemctl enable nginx &>> $logs_file
+systemctl start nginx &>> $logs_file
 validate $? "Starting nginx"
 
-rm -rf /usr/share/nginx/html/*
+rm -rf /usr/share/nginx/html/* &>> $logs_file
 validate $? "Removing old code"
 
-curl -o /tmp/frontend.tar.gz https://raw.githubusercontent.com/daws-92s/expense-documentation/refs/heads/main/artifacts/expense-frontend-v5.tar.gz
+curl -o /tmp/frontend.tar.gz https://raw.githubusercontent.com/daws-92s/expense-documentation/refs/heads/main/artifacts/expense-frontend-v5.tar.gz &>> $logs_file
 validate $? "Downloading frontend artifacts"
 
 cd /usr/share/nginx/html
-tar -xzf /tmp/frontend.tar.gz
+tar -xzf /tmp/frontend.tar.gz &>> $logs_file
 validate $? "Extracting frontend artifacts"
 
 sed -i "s/DOMAIN_NAME/$domain_name/g" "$scripts_dir/expense.conf"
 cp "$scripts_dir/expense.conf" /etc/systemd/system/expense.conf
 
-nginx -t
+nginx -t &>> $logs_file
 validate $? "Testing nginx configuration"
 
-systemctl restart nginx
+systemctl restart nginx &>> $logs_file
 validate $? "Restarting nginx"
