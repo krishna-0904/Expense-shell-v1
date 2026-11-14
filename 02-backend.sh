@@ -40,8 +40,8 @@ dnf module enable nodejs:24 -y &>> $logs_file
 dnf install nodejs -y &>> $logs_file
 validate $? "Installing nodejs"
 
-rm -rf /app
-validate $? "Removing old code"
+# rm -rf /app
+# validate $? "Removing old code"
 
 mkdir -p /app
 validate $? "Creating app directory"
