@@ -52,7 +52,7 @@ tar -xzf /tmp/frontend.tar.gz &>> $logs_file
 validate $? "Extracting frontend artifacts"
 
 sed -i "s/DOMAIN_NAME/$domain_name/g" "$scripts_dir/expense.conf"
-cp "$scripts_dir/expense.conf" /etc/systemd/system/expense.conf
+cp "$scripts_dir/expense.conf" /etc/nginx/default.d/expense.conf
 
 nginx -t &>> $logs_file
 validate $? "Testing nginx configuration"
